@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+
+    <title>Stellar force merge demo</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <link href="blog.css" rel="stylesheet">
+
+    
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="#">Home</a>
+          <a class="blog-nav-item" target="_blank" href="https://www.stellar.org/">Stellar Site</a>
+          <a class="blog-nav-item" target="_blank" href="https://www.stellar.org/laboratory/">Stellar Lab</a>
+          <a class="blog-nav-item" target="_blank" href="https://www.stellar.org/developers/">Stellar Docs</a>
+          
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">Stellar Force Merge</h1>
+        <p class="lead blog-description">This tool transfers all assets and offers from one account to another.</p>
+      </div>
+      <div class="text-info" id="statusMsg"></div>
+      <div class="row">
+        <div>
+          <form class="form" id="account-merge-form">
+            <div class="form-group">
+              <label>Select Stellar Network</label>
+              <label class="radio-inline">
+                <input type="radio" name="network" id="network1" value="1" checked="true"> Testnet
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="network" id="network2" value="2"> Livenet
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="srcAccount" class="sr-only">Source Account</label>
+              <input type="text" id="srcAccount" name="srcAccount" class="form-control" placeholder="Enter Source Account" required autofocus>
+            </div>
+            <div class="form-group">
+              <label for="srcSeed" class="sr-only">Source Seed</label>
+              <input type="text" id="srcSeed" name="srcSeed" class="form-control" placeholder="Enter Source Account Seed" required>
+            </div>
+            <div class="form-group">
+              <label for="destAccount" class="sr-only">Destination Account</label>
+              <input type="text" id="destAccount" name="destAccount" class="form-control" placeholder="Enter Destination Account" required>
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" name="customAsset" value="true">Merge custom assets
+              </label>
+            </div>
+            <div class="form-group" id="destSeed">
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Merge Accounts</button>
+          </form>
+        </div>
+        
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="jquery.min.js"><\/script>')</script>
+    <script src="bootstrap.min.js"></script>
+    <script src="stellar-sdk.js"></script>
+
+    <script src="stellar-asset-merge.js"></script>
+
+    
+    
+  </body>
+</html>
