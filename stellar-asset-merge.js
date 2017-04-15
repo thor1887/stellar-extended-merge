@@ -4,8 +4,11 @@ jQuery(document).ready( function($){
   var statusMsg = "Merging accounts...\n";
   var server = "";
   var srcBalances = [];
-  var srcOffers = []
+  var srcOffers = [];
+  var srcData = {};
+  var srcSubEntryCount = 0;
   var customAsset = false;
+  var destToSign = 0;
 
   // display srcSeed form 
   $("[name='customAsset']").on('change', function() {
@@ -49,6 +52,7 @@ jQuery(document).ready( function($){
 
     // Validate Inputs
     if (networkType == 1) {
+      StellarSdk.Network.useTestNetwork();
       server = new StellarSdk.Server(testNet);
     } else if (networkType == 2) {
       StellarSdk.Network.usePublicNetwork();
@@ -134,6 +138,9 @@ jQuery(document).ready( function($){
       .then(function(acct) {
         newTx = new StellarSdk.TransactionBuilder(acct);
         srcBalances = acct.balances;
+        srcData = acct.data_attr;
+        srcSubEntryCount = acct.subentry_count;
+        
         console.log("srcBalances: ", srcBalances, "\n length", srcBalances.length);
         if (acct.subentry_count > 0 && !customAsset) {
           statusMsg += "<p>Source accounts has sub entries. Destination account seed is required. Please select the custom asset checkbox.</p>";
@@ -161,11 +168,16 @@ jQuery(document).ready( function($){
               // create trustline
               // transfer balance
               // remove trust line
-              newTx = newTx.addOperation(StellarSdk.Operation.changeTrust({
+              //check if destination is not the owner of asset. 
+              if (balance.asset_issuer != destAccount) {
+                newTx = newTx.addOperation(StellarSdk.Operation.changeTrust({
                             asset: asset,
                             limit: balance.limit,
                             source: destAccount
                           }));
+                destToSign = 1;
+              }
+              
               if (parseFloat(balance.balance) > 0) {
                 newTx = newTx.addOperation(StellarSdk.Operation.payment({
                             destination: destAccount,
@@ -221,9 +233,35 @@ jQuery(document).ready( function($){
                             offerId: offer.id,
                             source: srcAccount
                           }));
+            destToSign = 1;
 
           });
         }
+
+        // move data to dest account
+
+        if (!jQuery.isEmptyObject(srcData)) {
+
+          // create new data at destination
+          // delete old data at source
+         for (var item in srcData) {
+
+          console.log(item);
+
+              newTx = newTx.addOperation(StellarSdk.Operation.manageData({
+                            name: item,
+                            value: srcData[item],
+                            source: destAccount
+                          }))
+                          .addOperation(StellarSdk.Operation.manageData({
+                            name: item,
+                            value: null,
+                            source: srcAccount
+                          }));
+          }
+          destToSign = 1;
+        }
+        
 
         // account merge the stellar way
         newTx = newTx.addOperation(StellarSdk.Operation.accountMerge({
@@ -236,7 +274,7 @@ jQuery(document).ready( function($){
         newTx.sign(srcKeypair);
         // if the destination seed was entered 
         // and the source account has more than 1 currency
-        if (destKeypair && srcBalances.length > 1) {
+        if (destKeypair && srcSubEntryCount > 0 && destToSign > 0) {
           console.log("destination Keypair signing");
           newTx.sign(destKeypair);
 
